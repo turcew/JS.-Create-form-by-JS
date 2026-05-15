@@ -56,7 +56,7 @@ buyerInfo.append(buyerLabel, buyerText);
 optionBuyer.append(buyerRadio, buyerInfo);
 
 ///////////
-// const optionSeller = optionBuyer.cloneNode(true)
+// const optionSeller = optionBuyer.cloneNode(true) увы не получилось
 
 const optionSeller = document.createElement("div");
 optionSeller.classList.add("options");
