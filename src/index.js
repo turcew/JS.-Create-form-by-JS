@@ -1,3 +1,37 @@
+"use strict";
+
+// functions
+
+const localStorage = {};
+
+class CollectProps {
+  handleEvent() {
+    event.preventDefault();
+    const person = {};
+
+    const inputs = inputFlex.querySelectorAll("input");
+
+    for (let index = 0; index < inputs.length; index++) {
+      if (inputs[index].type === "password") {
+        continue;
+      } else {
+        person[inputs[index].placeholder] = inputs[index].value;
+      }
+    }
+
+    if (/\w/.test(person["Display name"])) {
+      localStorage[person["Display name"]] = person;
+    } else {
+      throw new Error(
+        "Display name input is missing, has restricted symbols or is empty",
+      );
+    }
+    console.log(localStorage);
+  }
+}
+
+// form
+
 const container = document.createElement("div");
 container.classList.add("container");
 
@@ -12,7 +46,7 @@ const form = document.createElement("form");
 const inputFlex = document.createElement("div");
 inputFlex.classList.add("input-flex");
 
-////////////////
+// fields
 
 const fields = [
   { type: "text", placeholder: "First name" },
@@ -31,7 +65,7 @@ fields.forEach((field) => {
   inputFlex.append(input);
 });
 
-////////////
+// buyer option
 
 const optionBuyer = document.createElement("div");
 optionBuyer.classList.add("options");
@@ -55,8 +89,7 @@ buyerText.textContent =
 buyerInfo.append(buyerLabel, buyerText);
 optionBuyer.append(buyerRadio, buyerInfo);
 
-///////////
-// const optionSeller = optionBuyer.cloneNode(true) увы не получилось
+// seller option
 
 const optionSeller = document.createElement("div");
 optionSeller.classList.add("options");
@@ -94,7 +127,7 @@ checkboxLabel.textContent =
 
 marketing.append(checkbox, checkboxLabel);
 
-//////////////
+// button
 
 const button = document.createElement("button");
 button.classList.add("btn");
@@ -102,6 +135,11 @@ button.type = "submit";
 button.textContent = "Create account";
 
 form.append(inputFlex, optionBuyer, optionSeller, marketing, button);
+
+// Collect props
+
+const collector = new CollectProps();
+form.addEventListener("submit", collector);
 
 container.append(title, subtitle, form);
 
