@@ -2,28 +2,38 @@
 
 // functions
 
-const localStorage = {};
+class Person {
+  constructor(data) {
+    this.firstName = data["First name"] || "";
+    this.lastName = data["Last name"] || "";
+    this.nickName = data["Display name"] || "";
+    this.email = data["Email Address"] || "";
+
+    Object.assign(this);
+  }
+}
 
 class CollectProps {
   handleEvent() {
     event.preventDefault();
-    const person = {};
 
+    const data = {};
     const inputs = inputFlex.querySelectorAll("input");
 
     for (let index = 0; index < inputs.length; index++) {
       if (inputs[index].type === "password") {
         continue;
-      } else {
-        person[inputs[index].placeholder] = inputs[index].value;
       }
+      data[inputs[index].placeholder] = inputs[index].value;
     }
 
-    if (/\w/.test(person["Display name"])) {
-      localStorage[person["Display name"]] = person;
+    const person = new Person(data);
+
+    if (/\w/.test(person["lastName"])) {
+      localStorage.setItem(person.lastName, JSON.stringify(person));
     } else {
       throw new Error(
-        "Display name input is missing, has restricted symbols or is empty",
+        "Last name input is missing, has restricted symbols or is empty",
       );
     }
     console.log(localStorage);
