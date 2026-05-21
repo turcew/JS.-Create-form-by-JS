@@ -4,12 +4,10 @@
 
 class Person {
   constructor(data) {
-    this.firstName = data["First name"] || "";
-    this.lastName = data["Last name"] || "";
-    this.nickName = data["Display name"] || "";
-    this.email = data["Email Address"] || "";
-
-    Object.assign(this);
+    this.firstName = data["First name"];
+    this.lastName = data["Last name"];
+    this.nickName = data["Display name"];
+    this.email = data["Email Address"];
   }
 }
 
