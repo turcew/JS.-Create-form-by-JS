@@ -3,39 +3,25 @@
 // functions
 
 class Person {
-  constructor(data) {
-    this.firstName = data["First name"];
-    this.lastName = data["Last name"];
-    this.nickName = data["Display name"];
-    this.email = data["Email Address"];
+  constructor(...args) {
+    args.forEach(({ name, value }) => (this[name] = value));
   }
 }
 
-class CollectProps {
-  handleEvent() {
-    event.preventDefault();
+function handleEvent(event) {
+  event.preventDefault();
 
-    const data = {};
-    const inputs = inputFlex.querySelectorAll("input");
+  const inputs = inputFlex.querySelectorAll("input");
+  const data = new Person(...inputs);
 
-    for (let index = 0; index < inputs.length; index++) {
-      if (inputs[index].type === "password") {
-        continue;
-      }
-      data[inputs[index].placeholder] = inputs[index].value;
+  for (let index = 0; index < inputs.length; index++) {
+    if (inputs[index].type === "password") {
+      continue;
     }
-
-    const person = new Person(data);
-
-    if (/\w/.test(person["lastName"])) {
-      localStorage.setItem(person.lastName, JSON.stringify(person));
-    } else {
-      throw new Error(
-        "Last name input is missing, has restricted symbols or is empty",
-      );
-    }
-    console.log(localStorage);
+    data[inputs[index].name] = inputs[index].value;
   }
+
+  localStorage.setItem(data.lastName, JSON.stringify(data));
 }
 
 // form
@@ -57,10 +43,10 @@ inputFlex.classList.add("input-flex");
 // fields
 
 const fields = [
-  { type: "text", placeholder: "First name" },
-  { type: "text", placeholder: "Last name" },
-  { type: "text", placeholder: "Display name" },
-  { type: "email", placeholder: "Email Address" },
+  { type: "text", placeholder: "First name", name: "firstName" },
+  { type: "text", placeholder: "Last name", name: "lastName" },
+  { type: "text", placeholder: "Display name", name: "displayName" },
+  { type: "email", placeholder: "Email Address", name: "email" },
   { type: "password", placeholder: "Password" },
   { type: "password", placeholder: "Password Confirmation" },
 ];
@@ -69,6 +55,7 @@ fields.forEach((field) => {
   const input = document.createElement("input");
   input.type = field.type;
   input.placeholder = field.placeholder;
+  input.name = field.name;
 
   inputFlex.append(input);
 });
@@ -146,8 +133,7 @@ form.append(inputFlex, optionBuyer, optionSeller, marketing, button);
 
 // Collect props
 
-const collector = new CollectProps();
-form.addEventListener("submit", collector);
+form.addEventListener("submit", handleEvent);
 
 container.append(title, subtitle, form);
 
