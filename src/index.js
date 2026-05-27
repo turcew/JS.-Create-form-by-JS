@@ -15,13 +15,61 @@ function handleEvent(event) {
   const data = new Person(...inputs);
 
   for (let index = 0; index < inputs.length; index++) {
-    if (inputs[index].type === "password") {
+    if (
+      inputs[index].type === "password" ||
+      inputs[index].type === "passwordConfirm"
+    ) {
       continue;
     }
     data[inputs[index].name] = inputs[index].value;
   }
 
   localStorage.setItem(data.lastName, JSON.stringify(data));
+}
+
+function checkEmail(event) {
+  const target = event.target;
+  const email = target.value;
+  const errorMsg = document.getElementById("email-error-text");
+
+  const emailRegex =
+    /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|.(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+
+  if (email.length === 0) {
+    target.classList.remove("input-error");
+    if (errorMsg) errorMsg.style.display = "none";
+    return;
+  }
+
+  if (!emailRegex.test(email)) {
+    target.classList.add("input-error");
+    errorMsg.style.display = "block";
+  } else {
+    target.classList.remove("input-error");
+    errorMsg.style.display = "none";
+  }
+}
+
+function checkPassword(event) {
+  const target = event.target;
+  const psw = target.value;
+  const errorMsg = document.getElementById("password-error-text");
+  const pswOrigin = document.getElementById("password-origin");
+  const pswOriginValue = pswOrigin.value;
+
+  if (psw === "" && pswOriginValue === "") {
+    target.classList.remove("input-error");
+    if (errorMsg) errorMsg.style.display = "none";
+    return;
+  }
+
+  if (psw !== pswOriginValue) {
+    target.classList.add("input-error");
+    errorMsg.style.display = "block";
+  } else {
+    target.classList.remove("input-error");
+    errorMsg.style.display = "none";
+  }
 }
 
 // form
@@ -47,17 +95,50 @@ const fields = [
   { type: "text", placeholder: "Last name", name: "lastName" },
   { type: "text", placeholder: "Display name", name: "displayName" },
   { type: "email", placeholder: "Email Address", name: "email" },
-  { type: "password", placeholder: "Password" },
-  { type: "password", placeholder: "Password Confirmation" },
+  { type: "password", placeholder: "Password", name: "password" },
+  {
+    type: "password",
+    placeholder: "Password Confirmation",
+    name: "passwordConfirm",
+  },
 ];
 
 fields.forEach((field) => {
-  const input = document.createElement("input");
-  input.type = field.type;
-  input.placeholder = field.placeholder;
-  input.name = field.name;
+  if (field.name === "email" || field.name === "passwordConfirm") {
+    const wrapper = document.createElement("div");
 
-  inputFlex.append(input);
+    const input = document.createElement("input");
+    input.type = field.type;
+    input.placeholder = field.placeholder;
+    input.name = field.name;
+
+    const errorMsg = document.createElement("span");
+    errorMsg.classList.add("error-msg");
+
+    if (field.name === "passwordConfirm") {
+      input.addEventListener("input", checkPassword);
+      errorMsg.textContent = "Passwords do not match";
+      errorMsg.id = "password-error-text";
+    } else {
+      input.addEventListener("input", checkEmail);
+      errorMsg.textContent = "Invalid email";
+      errorMsg.id = "email-error-text";
+    }
+
+    wrapper.append(input, errorMsg);
+    inputFlex.append(wrapper);
+  } else {
+    const input = document.createElement("input");
+    input.type = field.type;
+    input.placeholder = field.placeholder;
+    input.name = field.name;
+
+    if (field.name === "password") {
+      input.id = "password-origin";
+    }
+
+    inputFlex.append(input);
+  }
 });
 
 // buyer option
@@ -133,8 +214,10 @@ form.append(inputFlex, optionBuyer, optionSeller, marketing, button);
 
 // Collect props
 
-form.addEventListener("submit", handleEvent);
-
 container.append(title, subtitle, form);
 
 document.body.append(container);
+
+// Events
+
+form.addEventListener("submit", handleEvent);

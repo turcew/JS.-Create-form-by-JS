@@ -61,6 +61,18 @@ body > h2 {
   gap: 12px;
 }
 
+.input-error {
+  outline: 3px solid rgb(255, 0, 0);
+}
+
+.error-msg {
+  color: unset;
+  color: red;
+  font-size: 13px;
+  position: absolute;
+  display: none;
+}
+
 .options > div {
   display: flex;
   flex-direction: column;
