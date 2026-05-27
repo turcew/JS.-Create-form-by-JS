@@ -51,10 +51,19 @@ function checkEmail(event) {
 }
 
 function checkPassword(event) {
-  const target = event.target;
+  const target =
+    event.target.id === "password-origin"
+      ? document.getElementById("password")
+      : event.target;
+
   const psw = target.value;
   const errorMsg = document.getElementById("password-error-text");
-  const pswOrigin = document.getElementById("password-origin");
+
+  const pswOrigin =
+    target.id === "password-origin"
+      ? document.getElementById("password")
+      : document.getElementById("password-origin");
+
   const pswOriginValue = pswOrigin.value;
 
   if (psw === "" && pswOriginValue === "") {
@@ -119,6 +128,7 @@ fields.forEach((field) => {
       input.addEventListener("input", checkPassword);
       errorMsg.textContent = "Passwords do not match";
       errorMsg.id = "password-error-text";
+      input.id = "password";
     } else {
       input.addEventListener("input", checkEmail);
       errorMsg.textContent = "Invalid email";
@@ -135,6 +145,7 @@ fields.forEach((field) => {
 
     if (field.name === "password") {
       input.id = "password-origin";
+      input.addEventListener("input", checkPassword);
     }
 
     inputFlex.append(input);
